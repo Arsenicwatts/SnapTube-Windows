@@ -1,0 +1,23 @@
+# Node & Dependencies
+node_modules/
+package-lock.json.bak
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production Temporary Media & Downloads
+temp/
+tmp/
+*.tmp
+*.part
+*.ytdl
+snaptube-web-downloads/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# User Settings & Scratch
+settings.json
+*.log
+

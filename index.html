@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="SnapTube — Universal Video & Audio Downloader. Download lossless 4K, 1080p video and studio MP3 audio from YouTube, Instagram, TikTok, X, and 1000+ platforms.">
+  <title>SnapTube — Universal Media Downloader</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="apple-dark">
+  <!-- ─── Apple Window Chrome ────────────────────────────────────────────── -->
+  <header id="titlebar" class="window-chrome" role="banner">
+    <div class="titlebar-leading">
+      <div class="brand-pill">
+        <svg class="brand-glyph" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="url(#brandGrad)"/>
+          <polygon points="10,8 16,12 10,16" fill="white"/>
+          <defs>
+            <linearGradient id="brandGrad" x1="0" y1="0" x2="24" y2="24">
+              <stop offset="0%" stop-color="#0A84FF"/>
+              <stop offset="100%" stop-color="#5E5CE6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="app-name">SnapTube</span>
+      </div>
+    </div>
+
+    <div class="titlebar-center"></div>
+
+    <!-- Window Controls (Right-aligned: Minimize, Maximize, Close) -->
+    <div class="titlebar-trailing">
+      <div class="traffic-lights" aria-label="Window controls">
+        <button id="btn-minimize" class="traffic-light minimize" title="Minimize" aria-label="Minimize window">
+          <svg width="6" height="2" viewBox="0 0 6 2"><line x1="0" y1="1" x2="6" y2="1" stroke="#5a3d00" stroke-width="1.2"/></svg>
+        </button>
+        <button id="btn-maximize" class="traffic-light maximize" title="Zoom" aria-label="Zoom window">
+          <svg width="6" height="6" viewBox="0 0 6 6"><polygon points="1,5 5,1 5,5" fill="#004d1a"/></svg>
+        </button>
+        <button id="btn-close" class="traffic-light close" title="Close" aria-label="Close window">
+          <svg width="6" height="6" viewBox="0 0 6 6"><path d="M1 1l4 4m0-4L1 5" stroke="#4d0000" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Main Application Shell ────────────────────────────────────────── -->
+  <div id="app" class="app-shell">
+    <!-- Liquid Glass Sidebar -->
+    <aside id="sidebar" class="sidebar" role="navigation" aria-label="Main Navigation">
+      <div class="sidebar-group">
+        <div class="sidebar-section-header">LIBRARY</div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-page="home" aria-current="page">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">Home</span>
+          </button>
+          <button class="nav-item" data-page="search">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="nav-label">Search</span>
+          </button>
+          <button class="nav-item" data-page="paste">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span class="nav-label">Paste URL</span>
+          </button>
+          <button class="nav-item" data-page="downloads">
+            <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="nav-label">Downloads</span>
+            <span id="download-badge" class="nav-badge hidden">0</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-group sidebar-bottom">
+        <button class="nav-item" data-page="settings">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="nav-label">Settings</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content Viewport -->
+    <main id="content" class="content-viewport" role="main">
+      <!-- ─── HOME Page ─────────────────────────────────────────────────── -->
+      <section id="page-home" class="page active">
+        <div class="apple-hero">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>Universal Media Downloader</span>
+          </div>
+
+          <h1 class="hero-headline">
+            Download Media.<br>
+            <span class="headline-gradient">Universal & Lossless.</span>
+          </h1>
+          <p class="hero-subheadline">
+            Extract pristine 4K video, high-bitrate streams, and studio 320kbps MP3 audio from over 1,000 online sources.
+          </p>
+
+          <!-- Apple Liquid Glass Search Capsule -->
+          <div class="search-capsule-wrap">
+            <div class="search-capsule" id="hero-search-box">
+              <svg class="search-glyph" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="hero-search" class="search-input" placeholder="Search keywords, or paste any media URL..." autocomplete="off" spellcheck="false" aria-label="Search videos or paste URL">
+              <span class="search-kbd-badge" title="Focus search">⌘K</span>
+              <button id="hero-search-btn" class="search-action-btn" aria-label="Execute search">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+            <!-- Auto-Suggestions Dropdown -->
+            <div id="suggestions-dropdown" class="suggestions-glass hidden" role="listbox"></div>
+          </div>
+
+          <!-- Quick Discovery Chips -->
+          <div class="platform-chips-tray">
+            <span class="tray-label">Quick search:</span>
+            <div class="chips-list">
+              <button class="chip-item" data-query="Trending Music">Music</button>
+              <button class="chip-item" data-query="4K Ultra HD Nature">4K Video</button>
+              <button class="chip-item" data-query="Podcast highlights">Podcasts</button>
+              <button class="chip-item chip-pill" id="chip-paste-trigger">Paste from Clipboard</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apple Craft Feature Cards -->
+        <div class="feature-grid">
+          <div class="glass-card" id="qa-paste" role="button" tabindex="0">
+            <div class="card-icon-wrap icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <h3 class="card-title">Instant Link Extraction</h3>
+            <p class="card-desc">Paste any video link for immediate multi-resolution stream analysis.</p>
+          </div>
+
+          <div class="glass-card" id="qa-batch" role="button" tabindex="0">
+            <div class="card-icon-wrap icon-pink">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <h3 class="card-title">Lossless 4K & Full HD</h3>
+            <p class="card-desc">Download multi-stream video merged seamlessly with high-bitrate audio in universal MP4 format.</p>
+          </div>
+
+          <div class="glass-card" id="qa-mp3" role="button" tabindex="0">
+            <div class="card-icon-wrap icon-orange">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <h3 class="card-title">Studio MP3 Audio</h3>
+            <p class="card-desc">Extract pristine 320kbps MP3 and M4A soundtracks directly from any stream.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── SEARCH Results Page ───────────────────────────────────────── -->
+      <section id="page-search" class="page">
+        <div class="page-top-bar">
+          <div class="bar-title-wrap">
+            <h2 class="view-title">Search Results</h2>
+            <span id="search-query-label" class="view-subtitle"></span>
+          </div>
+        </div>
+        <div id="search-results" class="results-grid">
+          <div class="empty-glass-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--label-tertiary)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <p class="state-title">Search to Discover</p>
+            <p class="state-caption">Enter search keywords or paste a link to find media across supported platforms.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── PASTE URL Page ────────────────────────────────────────────── -->
+      <section id="page-paste" class="page">
+        <div class="single-column-pane">
+          <div class="pane-header">
+            <h2 class="view-title">Paste Video URL</h2>
+            <p class="view-subtitle">Download from YouTube, Instagram, Facebook, TikTok, Twitter/X, and 1,000+ sites.</p>
+          </div>
+
+          <div class="paste-bar-wrap">
+            <input type="url" id="paste-url-input" class="paste-text-input" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" spellcheck="false" aria-label="Video URL input">
+            <button id="paste-fetch-btn" class="apple-btn apple-btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Analyze Link</span>
+            </button>
+          </div>
+
+          <div id="paste-result" class="paste-card-outlet hidden"></div>
+        </div>
+      </section>
+
+      <!-- ─── DOWNLOADS Page ────────────────────────────────────────────── -->
+      <section id="page-downloads" class="page">
+        <div class="page-top-bar">
+          <div class="bar-title-wrap">
+            <h2 class="view-title">Active Downloads</h2>
+            <span class="view-subtitle">Monitor and access all your saved media files</span>
+          </div>
+          <div class="bar-actions">
+            <button id="open-dl-folder" class="apple-btn apple-btn-secondary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>Open Folder</span>
+            </button>
+            <button id="clear-finished-btn" class="apple-btn apple-btn-ghost">Clear Finished</button>
+          </div>
+        </div>
+
+        <div id="download-list" class="downloads-container">
+          <div class="empty-glass-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--label-tertiary)" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <p class="state-title">No Active Downloads</p>
+            <p class="state-caption">Your downloaded videos and MP3 tracks will appear here in real-time.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── SETTINGS Page ─────────────────────────────────────────────── -->
+      <section id="page-settings" class="page">
+        <div class="single-column-pane">
+          <div class="pane-header">
+            <h2 class="view-title">Settings</h2>
+            <p class="view-subtitle">Preferences and extraction engine diagnostics</p>
+          </div>
+
+          <div class="apple-settings-table">
+            <!-- Group 1: Storage -->
+            <div class="settings-card">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Download Destination</div>
+                  <div class="setting-desc">Files will be saved automatically to this folder</div>
+                </div>
+                <div class="setting-control path-control">
+                  <input type="text" id="settings-dl-path" class="path-input" readonly>
+                  <button id="settings-change-path" class="apple-btn apple-btn-secondary">Choose...</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 2: Engine Status -->
+            <div class="settings-card">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Extraction Engine</div>
+                  <div class="setting-desc">yt-dlp core extractor with FFmpeg static integration</div>
+                </div>
+                <div class="setting-control">
+                  <span id="ytdlp-status" class="engine-badge">Verifying...</span>
+                  <button id="settings-update-ytdlp" class="apple-btn apple-btn-secondary">Check Updates</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 3: Niche & Restricted Platforms -->
+            <div class="settings-card">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">Browser Session Cookies</div>
+                  <div class="setting-desc">Direct mode connects cleanly without browser locks. Firefox profile cookies are supported if needed.</div>
+                </div>
+                <div class="setting-control">
+                  <select id="settings-cookies-browser" class="apple-select">
+                    <option value="none" selected>Disabled (Direct &mdash; Recommended)</option>
+                    <option value="firefox">Mozilla Firefox</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 3: About -->
+            <div class="settings-card">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <div class="setting-title">About SnapTube</div>
+                  <div class="setting-desc">Universal Media Downloader &bull; Built with Apple HIG standards</div>
+                </div>
+                <div class="setting-control">
+                  <span class="version-tag">v1.0 Production Ready</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ─── Apple Sheet: Video Quality Selector Modal ────────────────────── -->
+  <div id="video-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+    <div class="modal-sheet">
+      <button class="sheet-close-btn" id="modal-close-btn" aria-label="Close dialog">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div id="modal-body" class="sheet-body">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Loading Overlay ───────────────────────────────────────────────── -->
+  <div id="loading-overlay" class="loading-scrim hidden" aria-live="assertive">
+    <div class="apple-spinner-card">
+      <div class="apple-spinner">
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+      </div>
+      <span class="spinner-text">Processing...</span>
+    </div>
+  </div>
+
+  <!-- ─── Toast Alerts ──────────────────────────────────────────────────── -->
+  <div id="toast-container" class="toast-stack" aria-live="polite"></div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
