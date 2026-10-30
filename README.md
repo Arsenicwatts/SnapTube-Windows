@@ -1,305 +1,261 @@
 <div align="center">
-
-  <img src="assets/icon.png" width="110" height="110" alt="SnapTube Logo" style="border-radius: 24px; box-shadow: 0 16px 36px rgba(0,0,0,0.35);" />
+  <img src="assets/icon.png" width="96" height="96" alt="SnapTube app icon" />
 
   # SnapTube
-  ### Universal Media Downloader &bullet; Apple HIG Edition
 
-  **A studio-grade, lossless media extraction and downloading engine engineered with Apple Human Interface Guidelines, translucent Liquid Glass aesthetics, and an enterprise hybrid dual-stack architecture.**
-
-  <p>
-    <a href="#key-features">Key Features</a> &bull;
-    <a href="#architecture">Architecture</a> &bull;
-    <a href="#quick-start">Quick Start</a> &bull;
-    <a href="#production-deployment">Production Deployment</a> &bull;
-    <a href="#rest-api--telemetry">REST API</a> &bull;
-    <a href="#git-publishing">Publishing to GitHub</a>
-  </p>
+  A desktop and web app for downloading online media.
 
   <p>
-    <img src="https://img.shields.io/badge/Platform-Desktop_%7C_Web_%7C_Docker-black?style=for-the-badge&logo=apple&logoColor=white" alt="Platform Support" />
-    <img src="https://img.shields.io/badge/UI%2FUX-Apple_Liquid_Glass-0071e3?style=for-the-badge&logo=apple" alt="Apple HIG" />
-    <img src="https://img.shields.io/badge/Node.js-18%2B_%7C_20%2B-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js Version" />
-    <img src="https://img.shields.io/badge/Electron-v28-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron Version" />
-    <img src="https://img.shields.io/badge/Core-yt--dlp_%2B_FFmpeg-FF0000?style=for-the-badge&logo=youtube" alt="Core Engine" />
-    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
+    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Web-444" alt="Windows and web" />
+    <img src="https://img.shields.io/badge/Runtime-Node.js-339933?logo=node.js&logoColor=white" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Desktop-Electron-47848F?logo=electron&logoColor=white" alt="Electron" />
+    <img src="https://img.shields.io/badge/Media-yt--dlp%20%7C%20FFmpeg-red" alt="yt-dlp and FFmpeg" />
+    <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License" />
   </p>
-
 </div>
 
 ---
 
-## Overview
+## About
 
-**SnapTube** is a modern media extraction suite built for creators, power users, and developers. By combining the speed of **distributed cloud resolver clusters** with the resilience of a **hardened local yt-dlp & FFmpeg pipeline**, SnapTube downloads 4K video and lossless studio audio from virtually any online source in seconds.
+SnapTube is a small media downloader built with Node.js. It provides a browser-based interface and an Electron desktop version, with `yt-dlp` and FFmpeg handling media extraction and processing.
 
-Designed strictly around **Apple's Human Interface Guidelines (HIG)**, the interface features real-time backdrop blur saturation, specular glass highlights, smooth spring animations, and native system controls across both desktop (macOS & Windows) and modern web browsers.
+The aim is to make common download tasks easier to manage: paste a link, inspect the available formats, choose a quality or audio option, and follow the download progress from the app.
 
----
+Supported sites and available formats depend on the capabilities of the bundled `yt-dlp` version and the source website. Some sites may change how their media is served, so a format or download that works today may need an extractor update later.
 
-## Comparison Matrix
+## Features
 
-| Feature | SnapTube (Apple HIG) | Generic Web Downloaders | Standard CLI (yt-dlp) |
-| :--- | :---: | :---: | :---: |
-| **Interface Quality** | **Apple Liquid Glass (SF Pro)** | Cluttered / Ads / Popups | Terminal Only |
-| **Dual Deployment** | **Desktop (Electron) + Cloud Web** | Web Only | Local CLI Only |
-| **Cloud CDN Acceleration** | **Zero-Bandwidth Resolver Fallback** | Limited | None |
-| **DPAPI & Cookie Bypass** | **Automatic Direct Fallback** | Unstable | Manual Setup |
-| **Live Telemetry** | **Real-Time SSE + Speed/ETA** | Generic Spinner | Terminal Text |
-| **Multi-Threaded Merging** | **Lossless FFmpeg Remux (MP4/MP3)** | Server Re-encode | Requires Flags |
-| **Privacy & Security** | **100% Zero Tracking / Self-Hostable** | Heavily Monitored | 100% Private |
+- **Desktop and browser modes** — use the Electron app or run the web interface locally.
+- **Media information** — retrieve a video's title, duration, and available formats before downloading.
+- **Video and audio options** — select from the formats and presets returned by the media extractor.
+- **Download progress** — view progress, transfer speed, and estimated time remaining where the source provides enough information.
+- **FFmpeg support** — merge separate audio and video streams or convert media when required.
+- **Download management** — retry a failed download and open the output location from the desktop app.
+- **Responsive interface** — use the app on a desktop browser or a smaller screen.
 
----
+## Tech stack
 
-## Key Features
+| Part | Technology |
+| --- | --- |
+| Interface | HTML, CSS, JavaScript |
+| Desktop wrapper | Electron |
+| Server | Node.js |
+| Media extraction | yt-dlp |
+| Media processing | FFmpeg |
+| Progress updates | Server-Sent Events (SSE) |
 
-### 1. Apple Liquid Glass UI & Design System
-- **Authentic macOS Glassmorphism**: Multi-layered translucent panels (`backdrop-filter: blur(28px) saturate(180%)`) with specular linear gradient borders.
-- **Dynamic Accent Glow**: Apple Intelligence style indigo-to-magenta fluid gradients.
-- **Desktop Window Chrome**: Top-right native window controls (Minimize, Maximize/Restore, Close) with hover feedback.
-- **Fluid Layout**: Responsive from compact mobile screens up to 4K Ultra-wide monitors.
+## How it works
 
-### 2. Hybrid Dual-Stack Extraction Engine
-- **Cloud Resolver Tier**: Instantaneous high-bitrate stream extraction via distributed public Cobalt clusters for mainstream platforms (YouTube, Instagram, TikTok, Twitter/X, Reddit, Vimeo, SoundCloud) with zero local CPU/bandwidth bottleneck.
-- **Deep Extractor Core**: Embedded, pre-compiled `yt-dlp` and `FFmpeg` pipeline providing coverage across **1,000+ niche, adult, and generic streaming providers**.
-- **Automated DPAPI & Cookie Resilience**: Completely immune to Windows Chromium 127+ App-Bound DPAPI decryption crashes. Automatically routes through authenticated direct headers (`age_verified=1`, `--geo-bypass`, custom desktop User-Agent, referer matching).
+The interface sends requests to the Node.js server in web mode. In desktop mode, Electron provides the native window and desktop integrations, while the renderer communicates with the main process through the preload bridge.
 
-### 3. Real-Time Telemetry & Progress Streaming
-- **Server-Sent Events (SSE)**: True streaming updates pushing live progress percentage, download speed (`MiB/s`), file size estimations, and ETA down to the millisecond.
-- **Multi-Part Parallel Downloading**: Multi-fragment acceleration (`-N 4`) with automatic DASH & HLS stream assembly.
-- **One-Click Retry**: Self-healing recovery mechanism for intermittent network drops.
+The server passes extraction and download work to the media engine. The engine uses `yt-dlp` to inspect and retrieve media and FFmpeg when streams need to be merged or processed. Progress is sent back to the interface through an SSE connection.
 
-### 4. Lossless Video & Studio Audio Presets
-- **Video Resolutions**: 4K Ultra HD (2160p), 1440p Quad HD (2K), 1080p Full HD (60fps), 720p HD, 480p SD, and 360p Mobile.
-- **Studio Audio Extraction**: Pristine 320 kbps High-Bitrate MP3, standard 128 kbps MP3, and native AAC / M4A audio extraction.
+```text
+             Web browser
+                  |
+                  | HTTP / SSE
+                  v
+          +---------------+
+          |  Node server  |
+          +---------------+
+                  |
+                  v
+          +---------------+
+          |  Media engine |
+          +---------------+
+             |         |
+             v         v
+          yt-dlp     FFmpeg
 
----
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                 SnapTube Unified Frontend                   │
-│   (Apple HIG Design System • HTML5 • CSS3 Glass • JS ES6)   │
-└──────────────┬───────────────────────────────┬──────────────┘
-               │                               │
-       [Electron IPC Bridge]             [HTTP / REST / SSE]
-               │                               │
-┌──────────────▼──────────────┐ ┌──────────────▼──────────────┐
-│  Desktop Controller (main)  │ │   Production Web Server     │
-│   • Native Window Chrome    │ │   • REST API Routing        │
-│   • OS File Explorer Open   │ │   • SSE Telemetry Stream    │
-│   • Local Path Persistence  │ │   • Static File CDN Engine  │
-└──────────────┬──────────────┘ └──────────────┬──────────────┘
-               │                               │
-               └───────────────┬───────────────┘
-                               │
-                ┌──────────────▼──────────────┐
-                │   SnapTube Engine Pipeline  │
-                │         (engine.js)         │
-                └──────────────┬──────────────┘
-                               │
-        ┌──────────────────────┴──────────────────────┐
-        ▼                                             ▼
-┌─────────────────────────────┐ ┌─────────────────────────────┐
-│    Cloud Stream Resolver    │ │     Local Deep Core         │
-│   • Public Cobalt Clusters  │ │   • yt-dlp Executable       │
-│   • 0ms Mainstream Parsing  │ │   • ffmpeg-static Multiplex │
-│   • Zero Bandwidth Cost     │ │   • DPAPI Resilient Fallback│
-└─────────────────────────────┘ └─────────────────────────────┘
+          Electron desktop
+                  |
+             Renderer UI
+                  |
+              IPC bridge
+                  |
+             Main process
+                  |
+             Node server
 ```
 
----
+## Requirements
 
-## Quick Start
+- Windows 10 or later for the desktop app
+- Node.js 18 or later
+- npm (included with Node.js)
+- FFmpeg available to the application
 
-### Prerequisites
-- **Node.js**: v18.0.0 or higher ([Download Node.js](https://nodejs.org/))
-- **Operating System**: Windows 10/11, macOS (Ventura or newer), or modern Linux
+The repository includes a Windows `yt-dlp` binary in `bin/`. If you are running the project on another operating system, make sure the appropriate `yt-dlp` executable is available and configured.
 
-### Installation
+## Getting started
+
+### 1. Clone the repository
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/Arsenicwatts/SnapTube-Windows.git
-cd "SnapTube Windows"
+cd SnapTube-Windows
+```
 
-# 2. Install dependencies
+### 2. Install dependencies
+
+```bash
 npm install
 ```
 
----
+### 3. Start the app
 
-### Running the Application
+**Desktop app (Electron)**
 
-#### Option A: Run as Desktop App (Electron)
-Double-click `run.bat` on Windows, or execute:
 ```bash
 npm run desktop
 ```
 
-#### Option B: Run as Web Server (Browser)
-Double-click `start-web.bat` on Windows, or execute:
+On Windows, you can also use:
+
+```text
+run.bat
+```
+
+**Web app**
+
 ```bash
 npm start
 ```
-Then navigate to **`http://localhost:3000`** in any browser (Chrome, Safari, Firefox, Edge, Brave, Mobile).
 
----
+On Windows, you can use `start-web.bat`.
 
-## Production Deployment
+Once the server has started, open [http://localhost:3000](http://localhost:3000) in your browser.
 
-SnapTube is designed as a cloud-native Twelve-Factor web application. You can host it on any cloud provider with zero extra configuration.
+## Configuration and deployment
 
-### 1. Deploy with Docker (Recommended)
+The server uses the `PORT` environment variable when it is set, and otherwise runs on port `3000`.
 
-Build and run the self-contained container:
+For local use, the commands above should be enough once the dependencies and media tools are installed. For a hosted deployment, check that the host allows the application to run external processes and has enough disk space for downloaded files. Some hosting providers restrict long-running downloads, temporary file storage, or outbound requests.
+
+### Docker
+
+A basic Docker image can be built with:
 
 ```bash
-# Build the Docker image
 docker build -t snaptube .
-
-# Run the container on port 3000
-docker run -d -p 3000:3000 --name snaptube-app --restart always snaptube
 ```
 
-#### Production `Dockerfile`:
-```dockerfile
-FROM node:20-slim
+Run it with:
 
-# Install system dependencies: ffmpeg, python3, and curl
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    python3 \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install latest standalone yt-dlp binary
-RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
-    && chmod a+rx /usr/local/bin/yt-dlp
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-RUN npm install --production
-
-COPY . .
-
-ENV PORT=3000
-ENV NODE_ENV=production
-
-EXPOSE 3000
-
-CMD ["node", "server.js"]
+```bash
+docker run --rm -p 3000:3000 --name snaptube snaptube
 ```
 
-### 2. Deploy to Railway / Render / Fly.io
+The container needs Node.js, FFmpeg, and a compatible `yt-dlp` executable. Review the repository's `Dockerfile` and adjust it to match the current project files before deploying.
 
-1. Connect your GitHub repository to [Railway](https://railway.app/) or [Render](https://render.com/).
-2. Set the configuration:
-   - **Environment**: Node
-   - **Build Command**: `npm install`
-   - **Start Command**: `node server.js`
-3. SnapTube automatically reads `process.env.PORT` assigned by the hosting environment.
+### Process manager
 
-### 3. Production Process Management (PM2)
+For a long-running Node.js server, you can use PM2:
 
 ```bash
 npm install -g pm2
-pm2 start server.js --name "snaptube" -i max
+pm2 start server.js --name snaptube
 pm2 save
-pm2 startup
 ```
 
----
+## API
 
-## REST API & Telemetry
+The server exposes the following endpoints:
 
-Developers can use SnapTube as a headless media extraction and downloading microservice:
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Check server status and media-tool availability |
+| `GET` | `/api/search?q=query` | Search for media |
+| `GET` | `/api/suggest?q=prefix` | Get search suggestions |
+| `POST` | `/api/info` | Retrieve information and available formats for a URL |
+| `POST` | `/api/download` | Start a download |
+| `GET` | `/api/progress/:id` | Subscribe to download progress using SSE |
+| `GET` | `/api/file/:id` | Retrieve a completed file |
 
-### Endpoints
-
-| Method | Endpoint | Description | Payload / Query |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/health` | Service health status & binary verification | None |
-| `GET` | `/api/search` | Fast search across online video platforms | `?q=query` |
-| `GET` | `/api/suggest` | Search query suggestions & auto-complete | `?q=prefix` |
-| `POST` | `/api/info` | Extract title, formats, duration & presets | `{ "url": "https://..." }` |
-| `POST` | `/api/download` | Initiate background extraction & conversion | `{ "url": "...", "preset": {...} }` |
-| `GET` | `/api/progress/:id`| Real-time Server-Sent Events (SSE) telemetry | Stream connection |
-| `GET` | `/api/file/:id` | Download the finalized media file | Binary stream |
-
----
-
-## Project Structure
-
-```text
-├── assets/                     # Branding, vector icons & favicon
-│   ├── favicon.svg             # Web browser favicon
-│   └── icon.png                # macOS & Windows application icon
-├── bin/                        # Pre-bundled runtime binaries
-│   └── yt-dlp.exe              # Embedded Windows yt-dlp engine
-├── engine.js                   # Enterprise extraction pipeline & resolvers
-├── server.js                   # Node.js HTTP server, REST API & SSE streaming
-├── main.js                     # Electron main process & IPC window manager
-├── preload.js                  # Electron context-bridge security barrier
-├── index.html                  # Apple HIG frontend application layout
-├── styles.css                  # Apple Liquid Glass design tokens & styles
-├── renderer.js                 # Dual-mode state controller (Desktop + Web)
-├── package.json                # Project dependencies & execution scripts
-├── run.bat                     # Windows desktop one-click runner
-├── start-web.bat               # Windows web server one-click runner
-├── .gitignore                  # Production Git ignore filter
-└── README.md                   # Project documentation
-```
-
----
-
-## Git Publishing
-
-Ready to publish this project to your GitHub account? Run the following commands in your terminal:
+Example request for media information:
 
 ```bash
-# 1. Initialize a new Git repository
-git init
-
-# 2. Stage all organized files
-git add .
-
-# 3. Commit with a clean semantic message
-git commit -m "feat: initial release of SnapTube v1.0.0 (Apple HIG Edition)"
-
-# 4. Set default branch to main
-git branch -M main
-
-# 5. Add your remote repository
-git remote add origin https://github.com/Arsenicwatts/SnapTube-Windows.git
-
-# 6. Push to GitHub
-git push -u origin main
+curl -X POST http://localhost:3000/api/info \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/video"}'
 ```
 
----
+The exact request fields and response format are defined by the server implementation. Refer to `server.js` and `engine.js` if you are integrating the API into another application.
+
+## Project structure
+
+```text
+.
+├── assets/
+│   ├── favicon.svg
+│   └── icon.png
+├── bin/
+│   └── yt-dlp.exe
+├── engine.js
+├── server.js
+├── main.js
+├── preload.js
+├── index.html
+├── styles.css
+├── renderer.js
+├── package.json
+├── run.bat
+├── start-web.bat
+├── .gitignore
+└── README.md
+```
+
+| File | Description |
+| --- | --- |
+| `engine.js` | Handles media extraction and download operations |
+| `server.js` | Starts the Node.js server and exposes the API |
+| `main.js` | Electron main process and desktop window setup |
+| `preload.js` | Exposes the desktop APIs to the renderer |
+| `renderer.js` | Handles interface behaviour |
+| `index.html` | Main application markup |
+| `styles.css` | Application styles |
+
+## Troubleshooting
+
+**The download does not start**
+
+- Check that the URL is supported by the installed `yt-dlp` version.
+- Update `yt-dlp` if the source website has changed.
+- Check the terminal output for the underlying extractor error.
+
+**Audio or video is missing after download**
+
+- Confirm that FFmpeg is installed and accessible to the application.
+- Some sources provide audio and video as separate streams. These need to be merged after download.
+
+**The app cannot find `yt-dlp` or FFmpeg**
+
+- Check that the executable exists in the expected location.
+- Make sure the process has permission to run it.
+- If you are using a different operating system, configure the matching executable.
+
+**The web page does not open**
+
+- Make sure the server started successfully.
+- Check whether another process is already using port `3000`.
+- If your hosting provider assigns a port, confirm that the app reads `process.env.PORT`.
 
 ## Contributing
 
-Contributions make the open-source community an inspiring place to learn, create, and build:
+Issues and pull requests are welcome.
 
-1. **Fork** the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a **Pull Request**
+1. Fork the repository.
+2. Create a branch for your change.
+3. Make and test your changes.
+4. Commit with a clear message.
+5. Open a pull request describing what changed.
 
----
+## Legal
 
-## Disclaimer & Legal Notice
+Use SnapTube only for media you own, have permission to download, or are otherwise legally allowed to access and save. You are responsible for following the copyright laws and terms that apply to the content and services you use.
 
-SnapTube is an open-source software project designed strictly for personal archiving, educational research, and offline viewing of freely available or Creative Commons media. Please respect copyright laws and the terms of service of each respective platform.
+## License
 
----
-
-<div align="center">
-  <sub>Engineered with precision &bull; Built with Apple Human Interface Guidelines standards &bull; Licensed under the <b>MIT License</b></sub>
-</div>
+This project is licensed under the MIT License. See the `LICENSE` file for details.
